@@ -9,14 +9,8 @@ generic
 
    Digest_Length : Index;
 
-   H0 : Unsigned_32;
-   H1 : Unsigned_32;
-   H2 : Unsigned_32;
-   H3 : Unsigned_32;
-   H4 : Unsigned_32;
-   H5 : Unsigned_32;
-   H6 : Unsigned_32;
-   H7 : Unsigned_32;
+   type State_Array is array (Natural range <>) of Unsigned_32;
+   Initial_State : State_Array;
 package SHA2_Generic_32 with
    Pure,
    Preelaborate
@@ -45,11 +39,9 @@ is
 private
    subtype Block is Element_Array (0 .. Block_Length - 1);
 
-   type State_Array is array (Natural range 0 .. 7) of Unsigned_32;
-
    type Context is record
-      State  : State_Array := (H0, H1, H2, H3, H4, H5, H6, H7);
-      Count  : Index       := 0;
+      State  : State_Array (0 .. 7) := Initial_State;
+      Count  : Index                := 0;
       Buffer : Block;
    end record;
 
