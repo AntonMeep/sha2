@@ -8,4 +8,5 @@ private
 
    procedure SHA2_224_Test (Object : in out Fixture);
    procedure SHA2_256_Test (Object : in out Fixture);
+   procedure SHA2_512_Test (Object : in out Fixture);
 end SHA2_Streams_Tests;
