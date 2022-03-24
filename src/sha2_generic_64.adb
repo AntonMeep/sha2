@@ -133,7 +133,7 @@ package body SHA2_Generic_64 is
          end if;
       end;
 
-      for I in 16 .. 63 loop
+      for I in 16 .. 79 loop
          W (I) := S_1 (W (I - 2)) + W (I - 7) + S_0 (W (I - 15)) + W (I - 16);
       end loop;
 
@@ -165,13 +165,13 @@ package body SHA2_Generic_64 is
    function Maj (X, Y, Z : Unsigned_64) return Unsigned_64 is
      ((X and Y) xor (X and Z) xor (Y and Z));
    function Sigma_0 (X : Unsigned_64) return Unsigned_64 is
-     (Rotate_Right (X, 2) xor Rotate_Right (X, 13) xor Rotate_Right (X, 22));
+     (Rotate_Right (X, 28) xor Rotate_Right (X, 34) xor Rotate_Right (X, 39));
    function Sigma_1 (X : Unsigned_64) return Unsigned_64 is
-     (Rotate_Right (X, 6) xor Rotate_Right (X, 11) xor Rotate_Right (X, 25));
+     (Rotate_Right (X, 14) xor Rotate_Right (X, 18) xor Rotate_Right (X, 41));
    function S_0 (X : Unsigned_64) return Unsigned_64 is
-     (Rotate_Right (X, 7) xor Rotate_Right (X, 18) xor Shift_Right (X, 3));
+     (Rotate_Right (X, 1) xor Rotate_Right (X, 8) xor Shift_Right (X, 7));
    function S_1 (X : Unsigned_64) return Unsigned_64 is
-     (Rotate_Right (X, 17) xor Rotate_Right (X, 19) xor Shift_Right (X, 10));
+     (Rotate_Right (X, 19) xor Rotate_Right (X, 61) xor Shift_Right (X, 6));
 
    function Modular_To_Big_Endian (Input : Input_Type) return Element_Array is
       use GNAT.Byte_Swapping;
