@@ -21,7 +21,7 @@ is
    package SHA_224 is new SHA2_Generic_32
      (Element => Element, Index => Index, Element_Array => Element_Array,
 
-      Digest_Length => 28, State_Array => State_Array_32,
+      Length        => 28, State_Array => State_Array_32,
       Initial_State =>
         (16#c105_9ed8#, 16#367c_d507#, 16#3070_dd17#, 16#f70e_5939#,
          16#ffc0_0b31#, 16#6858_1511#, 16#64f9_8fa7#, 16#befa_4fa4#));
@@ -29,7 +29,7 @@ is
    package SHA_256 is new SHA2_Generic_32
      (Element => Element, Index => Index, Element_Array => Element_Array,
 
-      Digest_Length => 32, State_Array => State_Array_32,
+      Length        => 32, State_Array => State_Array_32,
       Initial_State =>
         (16#6a09_e667#, 16#bb67_ae85#, 16#3c6e_f372#, 16#a54f_f53a#,
          16#510e_527f#, 16#9b05_688c#, 16#1f83_d9ab#, 16#5be0_cd19#));
@@ -37,7 +37,7 @@ is
    package SHA_384 is new SHA2_Generic_64
      (Element => Element, Index => Index, Element_Array => Element_Array,
 
-      Digest_Length => 48, State_Array => State_Array_64,
+      Length        => 48, State_Array => State_Array_64,
       Initial_State =>
         (16#cbbb_9d5d_c105_9ed8#, 16#629a_292a_367c_d507#,
          16#9159_015a_3070_dd17#, 16#152f_ecd8_f70e_5939#,
@@ -47,7 +47,7 @@ is
    package SHA_512 is new SHA2_Generic_64
      (Element => Element, Index => Index, Element_Array => Element_Array,
 
-      Digest_Length => 64, State_Array => State_Array_64,
+      Length        => 64, State_Array => State_Array_64,
       Initial_State =>
         (16#6a09_e667_f3bc_c908#, 16#bb67_ae85_84ca_a73b#,
          16#3c6e_f372_fe94_f82b#, 16#a54f_f53a_5f1d_36f1#,
@@ -57,7 +57,7 @@ is
    package SHA_512_224 is new SHA2_Generic_64
      (Element => Element, Index => Index, Element_Array => Element_Array,
 
-      Digest_Length => 28, State_Array => State_Array_64,
+      Length        => 28, State_Array => State_Array_64,
       Initial_State =>
         (16#8C3D_37C8_1954_4DA2#, 16#73E1_9966_89DC_D4D6#,
          16#1DFA_B7AE_32FF_9C82#, 16#679D_D514_582F_9FCF#,
@@ -67,7 +67,7 @@ is
    package SHA_512_256 is new SHA2_Generic_64
      (Element => Element, Index => Index, Element_Array => Element_Array,
 
-      Digest_Length => 32, State_Array => State_Array_64,
+      Length        => 32, State_Array => State_Array_64,
       Initial_State =>
         (16#2231_2194_FC2B_F72C#, 16#9F55_5FA3_C84C_64C2#,
          16#2393_B86B_6F53_B151#, 16#9638_7719_5940_EABD#,

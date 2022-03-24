@@ -7,7 +7,7 @@ generic
    type Index is range <>;
    type Element_Array is array (Index range <>) of Element;
 
-   Digest_Length : Index;
+   Length : Index;
 
    type State_Array is array (Natural range <>) of Unsigned_64;
    Initial_State : State_Array;
@@ -19,7 +19,8 @@ is
      (Element'Modulus /= 256,
       "'Element' type must be mod 2**8, i.e. represent a byte");
 
-   Block_Length : constant Index := 128;
+   Digest_Length : constant Index := Length;
+   Block_Length  : constant Index := 128;
 
    subtype Digest is Element_Array (0 .. Digest_Length - 1);
 
