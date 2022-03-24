@@ -53,10 +53,8 @@ package body SHA2_Generic_64 is
    end Finalize;
 
    procedure Finalize (Ctx : in out Context; Output : out Digest) is
-      Current     : Index          := Output'First;
       Final_Count : constant Index := Ctx.Count;
 
-      function To_Big_Endian is new Modular_To_Big_Endian (Unsigned_32);
       function To_Big_Endian is new Modular_To_Big_Endian (Unsigned_64);
    begin
       --  Insert padding
@@ -80,11 +78,17 @@ package body SHA2_Generic_64 is
         (Ctx, To_Big_Endian (Shift_Right (Unsigned_64 (Final_Count), 61)));
       Update (Ctx, To_Big_Endian (Shift_Left (Unsigned_64 (Final_Count), 3)));
 
-      for H of Ctx.State loop
-         Output (Current + 0 .. Current + 7) := To_Big_Endian (H);
-         Current                             := Current + 8;
-         exit when Current >= Digest_Length;
-      end loop;
+      declare
+         Buffer  : Element_Array (0 .. 63);
+         Current : Index := Buffer'First;
+      begin
+         for H of Ctx.State loop
+            Buffer (Current + 0 .. Current + 7) := To_Big_Endian (H);
+            Current                             := Current + 8;
+            exit when Current >= Digest_Length;
+         end loop;
+         Output := Buffer (0 .. Output'Length - 1);
+      end;
    end Finalize;
 
    function Hash (Input : String) return Digest is
