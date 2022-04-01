@@ -67,6 +67,7 @@ private
       16#90be_fffa#, 16#a450_6ceb#, 16#bef9_a3f7#, 16#c671_78f2#);
 
    procedure Transform (Ctx : in out Context);
+   pragma Inline (Transform);
 
    function Ch (X, Y, Z : Unsigned_32) return Unsigned_32;
    function Maj (X, Y, Z : Unsigned_32) return Unsigned_32;
@@ -74,4 +75,5 @@ private
    function Sigma_1 (X : Unsigned_32) return Unsigned_32;
    function S_0 (X : Unsigned_32) return Unsigned_32;
    function S_1 (X : Unsigned_32) return Unsigned_32;
+   pragma Inline (Ch, Maj, Sigma_0, Sigma_1, S_0, S_1);
 end SHA2_Generic_32;

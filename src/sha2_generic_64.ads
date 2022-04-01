@@ -91,6 +91,7 @@ private
       16#5fcb_6fab_3ad6_faec#, 16#6c44_198c_4a47_5817#);
 
    procedure Transform (Ctx : in out Context);
+   pragma Inline (Transform);
 
    function Ch (X, Y, Z : Unsigned_64) return Unsigned_64;
    function Maj (X, Y, Z : Unsigned_64) return Unsigned_64;
@@ -98,6 +99,7 @@ private
    function Sigma_1 (X : Unsigned_64) return Unsigned_64;
    function S_0 (X : Unsigned_64) return Unsigned_64;
    function S_1 (X : Unsigned_64) return Unsigned_64;
+   pragma Inline (Ch, Maj, Sigma_0, Sigma_1, S_0, S_1);
 
    generic
       type Input_Type is mod <>;
