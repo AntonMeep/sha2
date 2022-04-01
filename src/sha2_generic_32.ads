@@ -74,8 +74,4 @@ private
    function Sigma_1 (X : Unsigned_32) return Unsigned_32;
    function S_0 (X : Unsigned_32) return Unsigned_32;
    function S_1 (X : Unsigned_32) return Unsigned_32;
-
-   generic
-      type Input_Type is mod <>;
-   function Modular_To_Big_Endian (Input : Input_Type) return Element_Array;
 end SHA2_Generic_32;
