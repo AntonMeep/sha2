@@ -42,42 +42,49 @@ package body SHA2_Generic_32 is
       end loop;
    end Update;
 
-   function Finalize (Ctx : in out Context) return Digest is
+   function Finalize (Ctx : Context) return Digest is
       Result : Digest;
    begin
       Finalize (Ctx, Result);
       return Result;
    end Finalize;
 
-   procedure Finalize (Ctx : in out Context; Output : out Digest) is
+   procedure Finalize (Ctx : Context; Output : out Digest) is
       Current     : Index          := Output'First;
       Final_Count : constant Index := Ctx.Count;
+      Ctx_Copy    : Context        := Ctx;
 
       function To_Big_Endian is new Modular_To_Big_Endian (Unsigned_32);
       function To_Big_Endian is new Modular_To_Big_Endian (Unsigned_64);
    begin
       --  Insert padding
-      Update (Ctx, Element_Array'(0 => 16#80#));
+      Update (Ctx_Copy, Element_Array'(0 => 16#80#));
 
-      if Ctx.Buffer'Last - (Ctx.Count rem Block_Length) < 8 then
+      if Ctx_Copy.Buffer'Last - (Ctx_Copy.Count rem Block_Length) < 8 then
          --  In case not enough space is left in the buffer we fill it up
          Update
-           (Ctx,
+           (Ctx_Copy,
             Element_Array'
-              (0 .. (Ctx.Buffer'Last - (Ctx.Count rem Block_Length)) => 0));
+              (0 ..
+                   (Ctx_Copy.Buffer'Last -
+                    (Ctx_Copy.Count rem Block_Length)) =>
+                 0));
       end if;
 
       --  Fill rest of the data with zeroes
       Update
-        (Ctx,
+        (Ctx_Copy,
          Element_Array'
-           (0 .. (Ctx.Buffer'Last - (Ctx.Count rem Block_Length) - 8) => 0));
+           (0 ..
+                (Ctx_Copy.Buffer'Last - (Ctx_Copy.Count rem Block_Length) -
+                 8) =>
+              0));
 
       --  Notice how we first convert to Unsigned_64 and only then multyplying
       --  This is because Index can be too small to fit the number of bits
-      Update (Ctx, To_Big_Endian (Unsigned_64 (Final_Count) * 8));
+      Update (Ctx_Copy, To_Big_Endian (Unsigned_64 (Final_Count) * 8));
 
-      for H of Ctx.State loop
+      for H of Ctx_Copy.State loop
          Output (Current + 0 .. Current + 3) := To_Big_Endian (H);
          Current                             := Current + 4;
          exit when Current >= Digest_Length;

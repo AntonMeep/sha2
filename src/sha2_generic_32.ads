@@ -32,8 +32,8 @@ is
    procedure Update (Ctx : in out Context; Input : String);
    procedure Update (Ctx : in out Context; Input : Element_Array);
 
-   function Finalize (Ctx : in out Context) return Digest;
-   procedure Finalize (Ctx : in out Context; Output : out Digest);
+   function Finalize (Ctx : Context) return Digest;
+   procedure Finalize (Ctx : Context; Output : out Digest);
 
    function Hash (Input : String) return Digest;
    function Hash (Input : Element_Array) return Digest;
