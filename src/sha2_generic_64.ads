@@ -100,8 +100,4 @@ private
    function S_0 (X : Unsigned_64) return Unsigned_64;
    function S_1 (X : Unsigned_64) return Unsigned_64;
    pragma Inline (Ch, Maj, Sigma_0, Sigma_1, S_0, S_1);
-
-   generic
-      type Input_Type is mod <>;
-   function Modular_To_Big_Endian (Input : Input_Type) return Element_Array;
 end SHA2_Generic_64;

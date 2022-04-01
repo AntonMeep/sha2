@@ -50,10 +50,11 @@ package body SHA2_Generic_64 is
    end Finalize;
 
    procedure Finalize (Ctx : Context; Output : out Digest) is
+      use GNAT.Byte_Swapping;
+      use System;
+
       Final_Count : constant Index := Ctx.Count;
       Ctx_Copy    : Context        := Ctx;
-
-      function To_Big_Endian is new Modular_To_Big_Endian (Unsigned_64);
    begin
       --  Insert padding
       Update (Ctx_Copy, Element_Array'(0 => 16#80#));
@@ -78,20 +79,46 @@ package body SHA2_Generic_64 is
                  16) =>
               0));
 
-      Update
-        (Ctx_Copy,
-         To_Big_Endian (Shift_Right (Unsigned_64 (Final_Count), 61)));
-      Update
-        (Ctx_Copy, To_Big_Endian (Shift_Left (Unsigned_64 (Final_Count), 3)));
+      declare
+         --  Shift_Left(X, 3) is equivalent to multiplyng by 8
+         Byte_Length_1 : Unsigned_64 :=
+           Shift_Right (Unsigned_64 (Final_Count), 61);
+         Byte_Length_2 : Unsigned_64 :=
+           Shift_Left (Unsigned_64 (Final_Count), 3);
+
+         Byte_Length_1_Buffer : Element_Array (0 .. 7);
+         for Byte_Length_1_Buffer'Address use Byte_Length_1'Address;
+         pragma Import (Ada, Byte_Length_1_Buffer);
+
+         Byte_Length_2_Buffer : Element_Array (0 .. 7);
+         for Byte_Length_2_Buffer'Address use Byte_Length_2'Address;
+         pragma Import (Ada, Byte_Length_2_Buffer);
+      begin
+         if Default_Bit_Order /= High_Order_First then
+            Swap8 (Byte_Length_1_Buffer'Address);
+            Swap8 (Byte_Length_2_Buffer'Address);
+         end if;
+         Update (Ctx_Copy, Byte_Length_1_Buffer);
+         Update (Ctx_Copy, Byte_Length_2_Buffer);
+      end;
 
       declare
          Buffer  : Element_Array (0 .. 63);
          Current : Index := Buffer'First;
       begin
          for H of Ctx_Copy.State loop
-            Buffer (Current + 0 .. Current + 7) := To_Big_Endian (H);
-            Current                             := Current + 8;
-            exit when Current >= Digest_Length;
+            declare
+               Inner_Buffer : Element_Array (0 .. 7);
+               for Inner_Buffer'Address use H'Address;
+               pragma Import (Ada, Inner_Buffer);
+            begin
+               if Default_Bit_Order /= High_Order_First then
+                  Swap8 (Inner_Buffer'Address);
+               end if;
+               Buffer (Current + 0 .. Current + 7) := Inner_Buffer;
+               Current                             := Current + 8;
+               exit when Current >= Digest_Length;
+            end;
          end loop;
          Output := Buffer (0 .. Output'Length - 1);
       end;
@@ -138,7 +165,7 @@ package body SHA2_Generic_64 is
 
          if Default_Bit_Order /= High_Order_First then
             --  Take care of endianess
-            for I in W'Range loop
+            for I in Buffer_Words'Range loop
                Swap8 (W (I)'Address);
             end loop;
          end if;
@@ -183,26 +210,4 @@ package body SHA2_Generic_64 is
      (Rotate_Right (X, 1) xor Rotate_Right (X, 8) xor Shift_Right (X, 7));
    function S_1 (X : Unsigned_64) return Unsigned_64 is
      (Rotate_Right (X, 19) xor Rotate_Right (X, 61) xor Shift_Right (X, 6));
-
-   function Modular_To_Big_Endian (Input : Input_Type) return Element_Array is
-      use GNAT.Byte_Swapping;
-      use System;
-
-      subtype Output_Type is Element_Array (0 .. Input_Type'Size / 8 - 1);
-      function Convert is new Ada.Unchecked_Conversion
-        (Input_Type, Output_Type);
-
-      Result : Output_Type := Convert (Input);
-   begin
-      if Default_Bit_Order /= High_Order_First then
-         if Input_Type'Size = 32 then
-            Swap4 (Result'Address);
-         elsif Input_Type'Size = 64 then
-            Swap8 (Result'Address);
-         else
-            raise Program_Error;
-         end if;
-      end if;
-      return Result;
-   end Modular_To_Big_Endian;
 end SHA2_Generic_64;
